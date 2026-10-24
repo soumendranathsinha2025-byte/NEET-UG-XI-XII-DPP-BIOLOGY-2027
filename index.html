@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEET Biology CBT Exam Portal | Soumendra Sir Biology Classes</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        cbttop: '#1e293b',
+                        cbtpanel: '#f8fafc',
+                        cbtgreen: '#16a34a',
+                        cbtred: '#dc2626',
+                        cbtpurple: '#7c3aed',
+                        cbtyellow: '#ca8a04',
+                        cbtdark: '#0f172a'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles for CBT UI and Security Constraints */
+        body {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            background-color: #f1f5f9;
+        }
+        .palette-btn {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+        .palette-not-visited { background-color: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; }
+        .palette-not-answered { background-color: #ef4444; color: #ffffff; clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 50% 100%, 0% 75%); }
+        .palette-answered { background-color: #22c55e; color: #ffffff; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); border-radius: 12px 12px 0 0; }
+        .palette-marked { background-color: #8b5cf6; color: #ffffff; border-radius: 50%; }
+        .palette-marked-answered { background-color: #8b5cf6; color: #ffffff; border-radius: 50%; }
+        .palette-marked-answered::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 10px;
+            height: 10px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.03);
+            pointer-events: none;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        /* Custom scrollbar for question panel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-800 bg-slate-100 min-h-screen flex flex-col">
+
+    <!-- Anti-Cheating Watermark Overlay -->
+    <div id="watermark" class="watermark uppercase tracking-widest hidden">
+        Soumendra Sir Biology Classes - Anti-Cheat Security Active
+    </div>
+
+    <!-- Validity Notice Banner -->
+    <div class="bg-amber-600 text-white text-xs sm:text-sm py-1.5 px-4 text-center font-medium shadow-md flex items-center justify-center gap-2">
+        <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
+        <span><strong>IMPORTANT NOTICE:</strong> This official CBT DPP portal link is valid up to <strong>January 2027</strong>. Access will expire post-validity.</span>
+    </div>
+
+    <!-- Header Banner -->
+    <header class="bg-slate-900 text-white border-b-4 border-emerald-500 shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-3">
+                <div class="bg-emerald-500 text-slate-900 p-2.5 rounded-xl font-black text-xl shadow-inner">
+                    <i class="fa-solid fa-dna"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">SOUMENDRA SIR BIOLOGY CLASSES</h1>
+                    <p class="text-xs text-emerald-400 font-medium">NEET-UG Online CBT Daily Practice Paper (DPP) Portal</p>
+                </div>
+            </div>
+            <div id="header-timer-container" class="hidden flex items-center bg-slate-800 px-4 py-1.5 rounded-lg border border-slate-700">
+                <i class="fa-regular fa-clock text-amber-400 mr-2 text-lg"></i>
+                <div>
+                    <span class="text-xs text-slate-400 block uppercase font-semibold">Time Remaining</span>
+                    <span id="timer-display" class="font-mono text-lg font-bold text-amber-300">180:00</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="flex-grow flex flex-col">
+
+        <!-- ==================== STEP 1: STUDENT REGISTRATION & VERIFICATION ==================== -->
+        <section id="step-registration" class="max-w-3xl mx-auto my-6 px-4 w-full">
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white p-6 border-b border-slate-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-xl font-bold text-emerald-400">Student Verification & Test Portal Login</h2>
+                            <p class="text-xs text-slate-300 mt-1">Fill in your authentic academic credentials to proceed to the CBT Environment.</p>
+                        </div>
+                        <span class="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full border border-emerald-500/30">NEET CBT v4.2</span>
+                    </div>
+                </div>
+
+                <form id="registration-form" class="p-6 sm:p-8 space-y-6" onsubmit="handleRegistrationSubmit(event)">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Student Name -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Full Name *</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fa-solid fa-user"></i></span>
+                                <input type="text" id="reg-name" required placeholder="e.g., Ananya Sengupta" 
+                                    class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-medium">
+                            </div>
+                        </div>
+
+                        <!-- Class -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Class / Target Year *</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fa-solid fa-graduation-cap"></i></span>
+                                <select id="reg-class" required class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-medium bg-white">
+                                    <option value="" disabled selected>Select Class</option>
+                                    <option value="Class 11">Class 11</option>
+                                    <option value="Class 12">Class 12</option>
+                                    <option value="NEET Repeater/Dropper">NEET Repeater / Dropper</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Section -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Section / Batch *</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fa-solid fa-users-rectangle"></i></span>
+                                <input type="text" id="reg-section" required placeholder="e.g., Section A / Alpha Batch" 
+                                    class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-medium">
+                            </div>
+                        </div>
+
+                        <!-- Board -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Board *</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fa-solid fa-school"></i></span>
+                                <select id="reg-board" required class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-medium bg-white">
+                                    <option value="" disabled selected>Select Educational Board</option>
+                                    <option value="CBSE">CBSE (Central Board)</option>
+                                    <option value="ISC / ICSE">ISC / ICSE</option>
+                                    <option value="WBCHSE (West Bengal Board)">WBCHSE (West Bengal Board)</option>
+                                    <option value="Other State Board">Other State Board</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Date -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Today's Exam Date *</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"><i class="fa-solid fa-calendar-day"></i></span>
+                                <input type="date" id="reg-date" required class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-medium">
+                            </div>
+                        </div>
+
+                        <!-- Captcha Verification -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Verification Code (Captcha) *</label>
+                            <div class="flex gap-2">
+                                <div id="captcha-box" class="bg-slate-200 border border-slate-300 font-mono font-bold tracking-widest text-lg px-4 py-2 rounded-lg text-slate-800 select-none flex items-center justify-center min-w-[120px] bg-lines">
+                                    XXXXXX
+                                </div>
+                                <button type="button" onclick="generateCaptcha()" title="Refresh Captcha" class="p-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                </button>
+                                <input type="text" id="reg-captcha-input" required placeholder="Enter Code" 
+                                    class="w-full px-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm font-medium uppercase">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Agreement Checkbox -->
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-900 space-y-2">
+                        <div class="flex items-start gap-2">
+                            <input type="checkbox" id="terms-check" required class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 h-4 w-4">
+                            <label for="terms-check" class="cursor-pointer font-medium leading-relaxed">
+                                I confirm that I am taking this test honestly under <strong>Soumendra Sir Biology Classes</strong> guidelines. I understand that tab switching, window blurring, right-clicking, and text copying will trigger security flags and may result in auto-submission of my exam.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full py-3.5 px-6 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg hover:shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 text-base">
+                        <i class="fa-solid fa-desktop"></i>
+                        <span>PROCEED TO CBT EXAMINATION INTERFACE</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+
+        <!-- ==================== STEP 2: FULL CBT EXAM INTERFACE ==================== -->
+        <section id="step-cbt" class="hidden flex-grow flex flex-col bg-slate-200">
+            <!-- Candidate Bar & Controller Header -->
+            <div class="bg-slate-800 text-white px-4 py-2 border-b border-slate-700 flex flex-wrap items-center justify-between gap-3">
+                <!-- Left: Candidate Info -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500 text-slate-900 font-bold flex items-center justify-center text-lg shadow">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div class="text-xs">
+                        <p class="font-bold text-emerald-400 text-sm" id="cbt-student-name">Student Name</p>
+                        <p class="text-slate-300" id="cbt-student-subtext">Class 12 | CBSE | Sec A</p>
+                    </div>
+                </div>
+
+                <!-- Middle: Chapter Selector -->
+                <div class="flex items-center gap-2">
+                    <label class="text-xs font-semibold text-slate-300 hidden sm:inline"><i class="fa-solid fa-book-bookmark text-emerald-400 mr-1"></i>Select Syllabus / Unit:</label>
+                    <select id="chapter-filter" onchange="filterChapterQuestions()" class="bg-slate-900 text-emerald-300 border border-slate-600 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-400 font-medium max-w-xs sm:max-w-md">
+                        <option value="ALL">-- ALL NEET BIOLOGY CHAPTERS (FULL TEST) --</option>
+                        <optgroup label="CLASS 11 BIOLOGY">
+                            <option value="Ch-1">Ch 1: The Living World</option>
+                            <option value="Ch-2">Ch 2: Biological Classification</option>
+                            <option value="Ch-3">Ch 3: Plant Kingdom</option>
+                            <option value="Ch-4">Ch 4: Animal Kingdom</option>
+                            <option value="Ch-5">Ch 5: Morphology of Flowering Plants</option>
+                            <option value="Ch-6">Ch 6: Anatomy of Flowering Plants</option>
+                            <option value="Ch-7">Ch 7: Structural Organisation in Animals (Frog)</option>
+                            <option value="Ch-8">Ch 8: Cell: The Unit of Life</option>
+                            <option value="Ch-9">Ch 9: Biomolecules</option>
+                            <option value="Ch-10">Ch 10: Cell Cycle and Cell Division</option>
+                            <option value="Ch-13">Ch 13: Photosynthesis in Higher Plants</option>
+                            <option value="Ch-14">Ch 14: Respiration in Plants</option>
+                            <option value="Ch-15">Ch 15: Plant - Growth and Development</option>
+                            <option value="Ch-17">Ch 17: Breathing and Exchange of Gases</option>
+                            <option value="Ch-18">Ch 18: Body Fluids and Circulation</option>
+                            <option value="Ch-19">Ch 19: Excretory Products and Elimination</option>
+                            <option value="Ch-20">Ch 20: Locomotion and Movement</option>
+                            <option value="Ch-21">Ch 21: Neural Control and Coordination</option>
+                            <option value="Ch-22">Ch 22: Chemical Coordination and Integration</option>
+                        </optgroup>
+                        <optgroup label="CLASS 12 BIOLOGY">
+                            <option value="Ch-2-12">Ch 2: Sexual Reproduction in Flowering Plants</option>
+                            <option value="Ch-3-12">Ch 3: Human Reproduction</option>
+                            <option value="Ch-4-12">Ch 4: Reproductive Health</option>
+                            <option value="Ch-5-12">Ch 5: Principles of Inheritance and Variation</option>
+                            <option value="Ch-6-12">Ch 6: Molecular Basis of Inheritance</option>
+                            <option value="Ch-7-12">Ch 7: Evolution</option>
+                            <option value="Ch-8-12">Ch 8: Human Health and Diseases</option>
+                            <option value="Ch-10-12">Ch 10: Microbes in Human Welfare</option>
+                            <option value="Ch-11-12">Ch 11: Biotechnology - Principles & Processes</option>
+                            <option value="Ch-12-12">Ch 12: Biotechnology and its Applications</option>
+                            <option value="Ch-13-12">Ch 13: Organisms and Populations</option>
+                            <option value="Ch-14-12">Ch 14: Ecosystem</option>
+                            <option value="Ch-15-12">Ch 15: Biodiversity and Conservation</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Right: Security Counter -->
+                <div class="flex items-center gap-2 text-xs bg-red-950/60 text-red-300 border border-red-800 px-3 py-1 rounded-md">
+                    <i class="fa-solid fa-shield-halved animate-pulse text-red-400"></i>
+                    <span>Warnings Left: <strong id="warning-count-display" class="text-white font-bold">3</strong>/3</span>
+                </div>
+            </div>
+
+            <!-- CBT Working Grid Area -->
+            <div class="flex-grow grid grid-cols-1 lg:grid-cols-4 gap-2 p-2 sm:p-4 max-w-7xl mx-auto w-full">
+                
+                <!-- LEFT MAIN QUESTION AREA (3 cols) -->
+                <div class="lg:col-span-3 bg-white rounded-xl border border-slate-300 flex flex-col shadow-sm overflow-hidden min-h-[520px]">
+                    
+                    <!-- Question Title Bar -->
+                    <div class="bg-slate-100 border-b border-slate-200 px-4 py-3 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-slate-800 text-white text-xs px-2.5 py-1 rounded font-bold" id="q-number-badge">Question No. 1</span>
+                            <span class="text-xs font-semibold text-slate-500 bg-slate-200 px-2 py-0.5 rounded" id="q-chapter-badge">Chapter Name</span>
+                        </div>
+                        <div class="text-xs font-semibold text-slate-600">
+                            Marks: <span class="text-emerald-600 font-bold">+4</span> | Negative: <span class="text-red-600 font-bold">-1</span>
+                        </div>
+                    </div>
+
+                    <!-- Question Scrollable Body -->
+                    <div class="p-4 sm:p-6 flex-grow overflow-y-auto space-y-4" id="question-container">
+                        <!-- Dynamic Question Content Injected via JS -->
+                    </div>
+
+                    <!-- Action Control Footer Bar -->
+                    <div class="bg-slate-100 border-t border-slate-200 p-3 sm:p-4 flex flex-wrap gap-2 justify-between items-center">
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="markForReviewAndNext()" class="px-3.5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs sm:text-sm rounded-lg transition-colors flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-bookmark"></i> Mark for Review & Next
+                            </button>
+                            <button onclick="clearResponse()" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs sm:text-sm rounded-lg transition-colors flex items-center gap-1.5">
+                                <i class="fa-solid fa-eraser"></i> Clear Response
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="saveAndNext()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-lg transition-colors flex items-center gap-1.5 shadow-md">
+                                Save & Next <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDEBAR QUESTION PALETTE (1 col) -->
+                <div class="bg-white rounded-xl border border-slate-300 p-4 flex flex-col shadow-sm justify-between space-y-4">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 border-b pb-2 mb-3">Question Palette</h3>
+                        
+                        <!-- Color Indicators Key -->
+                        <div class="grid grid-cols-2 gap-2 text-[11px] font-medium text-slate-600 mb-4 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded bg-slate-200 border border-slate-300 inline-block"></span> Not Visited</div>
+                            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded bg-red-500 inline-block" style="clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 50% 100%, 0% 75%);"></span> Not Answered</div>
+                            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded bg-emerald-500 inline-block"></span> Answered</div>
+                            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded-full bg-purple-600 inline-block"></span> Marked Review</div>
+                        </div>
+
+                        <!-- Grid Buttons -->
+                        <div id="palette-grid" class="grid grid-cols-5 sm:grid-cols-6 lg:grid-cols-5 gap-2 max-h-[320px] overflow-y-auto pr-1">
+                            <!-- Palette Buttons Rendered via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Final Submit Button -->
+                    <div class="pt-3 border-t border-slate-200">
+                        <button onclick="confirmSubmitExam()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-black text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> SUBMIT FINAL EXAMINATION
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ==================== STEP 3: RESULT & PERFORMANCE REPORT ==================== -->
+        <section id="step-result" class="hidden max-w-4xl mx-auto my-6 px-4 w-full">
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                
+                <!-- Result Header Banner -->
+                <div class="bg-slate-900 text-white p-6 text-center border-b border-slate-700">
+                    <div class="inline-block p-3 bg-emerald-500/20 rounded-full border border-emerald-500/30 text-emerald-400 mb-2">
+                        <i class="fa-solid fa-award text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-white tracking-tight">NEET CBT DPP EXAMINATION SCORECARD</h2>
+                    <p class="text-xs text-emerald-400 mt-1 font-semibold">Soumendra Sir Biology Classes • Official Student Evaluation</p>
+                </div>
+
+                <!-- Student Metadata Card -->
+                <div class="bg-slate-50 p-4 border-b border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div><span class="text-slate-500 block">Candidate Name:</span><strong id="res-name" class="text-slate-800 text-sm">--</strong></div>
+                    <div><span class="text-slate-500 block">Class & Board:</span><strong id="res-class-board" class="text-slate-800 text-sm">--</strong></div>
+                    <div><span class="text-slate-500 block">Section / Batch:</span><strong id="res-section" class="text-slate-800 text-sm">--</strong></div>
+                    <div><span class="text-slate-500 block">Test Date:</span><strong id="res-date" class="text-slate-800 text-sm">--</strong></div>
+                </div>
+
+                <!-- Score Summary Cards -->
+                <div class="p-6 space-y-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center">
+                            <span class="text-xs font-bold text-emerald-700 uppercase">Total Marks</span>
+                            <div class="text-3xl font-black text-emerald-600 mt-1" id="res-total-score">0 / 200</div>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl text-center">
+                            <span class="text-xs font-bold text-blue-700 uppercase">Accuracy Rate</span>
+                            <div class="text-3xl font-black text-blue-600 mt-1" id="res-accuracy">0%</div>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl text-center">
+                            <span class="text-xs font-bold text-emerald-800 uppercase">Correct Answers</span>
+                            <div class="text-3xl font-black text-emerald-700 mt-1" id="res-correct">0</div>
+                        </div>
+                        <div class="bg-red-50 border border-red-200 p-4 rounded-xl text-center">
+                            <span class="text-xs font-bold text-red-700 uppercase">Incorrect (-1)</span>
+                            <div class="text-3xl font-black text-red-600 mt-1" id="res-incorrect">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Direct WhatsApp Submission Action Box -->
+                    <div class="bg-emerald-950 text-white rounded-2xl p-6 border-2 border-emerald-500 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                        <div>
+                            <span class="bg-emerald-500 text-slate-900 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full mb-1 inline-block">Mandatory Submission Step</span>
+                            <h3 class="text-lg font-bold text-white">Send Scorecard to Soumendra Sir</h3>
+                            <p class="text-xs text-emerald-300 mt-0.5">Click below to auto-format and dispatch your complete score analysis via WhatsApp to <strong>8910587106</strong>.</p>
+                        </div>
+                        <button onclick="sendToWhatsApp()" class="w-full sm:w-auto px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-sm whitespace-nowrap">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> SUBMIT REPORT VIA WHATSAPP
+                        </button>
+                    </div>
+
+                    <!-- Print and Review Answers Buttons -->
+                    <div class="flex flex-wrap gap-3 justify-between items-center pt-2">
+                        <button onclick="window.print()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-print"></i> Print Scorecard PDF
+                        </button>
+                        <button onclick="toggleSolutions()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-book-open"></i> Toggle Detailed Solutions & Answer Key
+                        </button>
+                    </div>
+
+                    <!-- Solutions Container -->
+                    <div id="solutions-container" class="hidden border-t border-slate-200 pt-6 space-y-4">
+                        <h3 class="text-base font-bold text-slate-800 border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-file-lines text-emerald-600"></i> Answer Key & Detailed Explanations
+                        </h3>
+                        <div id="solutions-list" class="space-y-4 text-xs">
+                            <!-- Solutions Injected via JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Custom Warning Modal -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-2xl border border-red-200 animate-bounce-short">
+            <div class="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-2xl mb-3">
+                <i class="fa-solid fa-shield-cat"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900" id="modal-title">Security Violation Warning</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed" id="modal-msg">Tab switching or leaving full screen is strictly prohibited during the examination.</p>
+            <button onclick="closeModal()" class="mt-5 w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition-colors">
+                I UNDERSTAND & ACKNOWLEDGE
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ==========================================================================
+           1. QUESTION BANK DATA (Class 11 & Class 12 NEET High-Yield Questions)
+           ========================================================================== */
+        const ALL_QUESTIONS = [
+            // --- CLASS 11 BIOLOGY ---
+            {
+                id: 1,
+                chapterId: 'Ch-1',
+                chapterName: 'The Living World',
+                type: 'standard',
+                question: 'Which of the following is an exclusive defining characteristic of living organisms without any exception?',
+                options: [
+                    'Increase in body mass from inside',
+                    'Growth and Reproduction',
+                    'Metabolism and Cellular Organization',
+                    'Response to external stimuli / Consciousness'
+                ],
+                correct: 3,
+                explanation: 'Consciousness (awareness of surroundings and responding to external stimuli) and intrinsic metabolism/cellular structure are defining properties. Growth and reproduction have exceptions.'
+            },
+            {
+                id: 2,
+                chapterId: 'Ch-2',
+                chapterName: 'Biological Classification',
+                type: 'ar',
+                question: '<strong>Assertion (A):</strong> Methanogens are archaebacteria present in the gut of several ruminant animals.<br><strong>Reason (R):</strong> Archaebacteria differ from other bacteria in having a different cell wall structure responsible for their survival in extreme conditions.',
+                options: [
+                    'Both (A) and (R) are true and (R) is the correct explanation of (A).',
+                    'Both (A) and (R) are true but (R) is NOT the correct explanation of (A).',
+                    '(A) is true but (R) is false.',
+                    '(A) is false but (R) is true.'
+                ],
+                correct: 0,
+                explanation: 'Archaebacteria have complex branched lipids and peptidoglycan-less walls enabling survival in harsh environments like cow rumen.'
+            },
+            {
+                id: 3,
+                chapterId: 'Ch-3',
+                chapterName: 'Plant Kingdom',
+                type: 'match',
+                question: 'Match Column-I with Column-II regarding Plant Kingdom groups:',
+                columnI: ['A. Algae (Phaeophyceae)', 'B. Bryophytes', 'C. Pteridophytes', 'D. Gymnosperms'],
+                columnII: ['I. Naked seeds & Pycnoxylon', 'II. First vascular land plants', 'III. Fucoxanthin & Mannitol', 'IV. Amphibians of plant kingdom'],
+                options: [
+                    'A-III, B-IV, C-II, D-I',
+                    'A-IV, B-III, C-I, D-II',
+                    'A-I, B-II, C-III, D-IV',
+                    'A-III, B-II, C-IV, D-I'
+                ],
+                correct: 0,
+                explanation: 'Brown algae store mannitol & contain fucoxanthin; Bryophytes need water for fertilization; Pteridophytes are first vascular plants; Gymnosperms bear naked seeds.'
+            },
+            {
+                id: 4,
+                chapterId: 'Ch-4',
+                chapterName: 'Animal Kingdom',
+                type: 'statement',
+                question: 'Select the correct statement(s):<br><strong>Statement-I:</strong> All vertebrates are chordates, but all chordates are not vertebrates.<br><strong>Statement-II:</strong> Notochord is replaced by a cartilaginous or bony vertebral column in adult vertebrates.',
+                options: [
+                    'Both Statement I and Statement II are correct.',
+                    'Both Statement I and Statement II are incorrect.',
+                    'Statement I is correct but Statement II is incorrect.',
+                    'Statement I is incorrect but Statement II is correct.'
+                ],
+                correct: 0,
+                explanation: 'Vertebrates possess notochord during embryonic period which is replaced by vertebral column in adults.'
+            },
+            {
+                id: 5,
+                chapterId: 'Ch-5',
+                chapterName: 'Morphology of Flowering Plants',
+                type: 'standard',
+                question: 'Which floral formula represents the family <strong>Solanaceae</strong>?',
+                options: [
+                    '⊕ ⚥ K(5) C(5) A5 G(2)',
+                    '% ⚥ K(5) C1+2+(2) A(9)+1 G1',
+                    '⊕ ⚥ P(3+3) A3+3 G(3)',
+                    '⊕ ⚥ K2+2 C4 A2+4 G(2)'
+                ],
+                correct: 0,
+                explanation: 'Solanaceae is characterized by actinomorphic (⊕), bisexual (⚥), gamosepalous K(5), gamopetalous C(5), epipetalous stamens A5, bicarpellary syncarpous superior ovary G(2).'
+            },
+            {
+                id: 6,
+                chapterId: 'Ch-6',
+                chapterName: 'Anatomy of Flowering Plants',
+                type: 'standard',
+                question: 'Casparian strips are present in the endodermis of roots. They are made up of a water-impermeable waxy material called:',
+                options: ['Pectin', 'Suberin', 'Lignin', 'Chitin'],
+                correct: 1,
+                explanation: 'Endodermal cells contain Casparian strips composed of suberin which blocks apoplastic movement of water into stele.'
+            },
+            {
+                id: 7,
+                chapterId: 'Ch-7',
+                chapterName: 'Structural Organisation in Animals',
+                type: 'standard',
+                question: 'In Indian Bullfrog (<em>Rana tigrina</em>), the respiration carried out through moist skin during hibernation/aestivation is termed:',
+                options: ['Pulmonary respiration', 'Buccopharyngeal respiration', 'Cutaneous respiration', 'Branchial respiration'],
+                correct: 2,
+                explanation: 'Cutaneous respiration occurs through moist skin when the frog undergoes aestivation (summer sleep) or hibernation (winter sleep).'
+            },
+            {
+                id: 8,
+                chapterId: 'Ch-8',
+                chapterName: 'Cell: The Unit of Life',
+                type: 'diagram',
+                svgContent: `<svg viewBox="0 0 200 120" class="w-48 h-28 mx-auto border rounded bg-slate-50"><ellipse cx="100" cy="60" rx="80" ry="40" fill="#fde047" stroke="#ca8a04" stroke-width="3"/><path d="M 30,60 Q 60,30 100,60 T 170,60" fill="none" stroke="#16a34a" stroke-width="4"/><text x="85" y="45" font-size="10" font-weight="bold" fill="#0f172a">Cristae / Inner Membrane</text></svg>`,
+                question: 'Identify the organelle shown in the diagram above and its primary function:',
+                options: [
+                    'Mitochondria - ATP generation via oxidative phosphorylation',
+                    'Chloroplast - Dark reaction of photosynthesis',
+                    'Golgi Body - Modification and packaging of proteins',
+                    'Endoplasmic Reticulum - Lipid synthesis'
+                ],
+                correct: 0,
+                explanation: 'The double-membrane structure with inner cristae folds represents Mitochondria, the powerhouse of the cell.'
+            },
+            {
+                id: 9,
+                chapterId: 'Ch-9',
+                chapterName: 'Biomolecules',
+                type: 'standard',
+                question: 'Which of the following is a non-reducing disaccharide?',
+                options: ['Maltose', 'Lactose', 'Sucrose', 'Glucose'],
+                correct: 2,
+                explanation: 'Sucrose is a non-reducing sugar because both reducing aldehyde/keto groups of glucose and fructose are involved in glycosidic linkage.'
+            },
+            {
+                id: 10,
+                chapterId: 'Ch-10',
+                chapterName: 'Cell Cycle and Cell Division',
+                type: 'standard',
+                question: 'Synaptonemal complex dissolves and recombination nodules disappear, while chiasmata become visible during which sub-stage of Prophase-I?',
+                options: ['Leptotene', 'Pachytene', 'Diplotene', 'Diakinesis'],
+                correct: 2,
+                explanation: 'Diplotene is marked by the dissolution of the synaptonemal complex and appearance of X-shaped structures called chiasmata.'
+            },
+            {
+                id: 11,
+                chapterId: 'Ch-13',
+                chapterName: 'Photosynthesis in Higher Plants',
+                type: 'standard',
+                question: 'The primary carbon dioxide acceptor in C4 plants is _____ present in mesophyll cells:',
+                options: ['RuBP (Ribulose 1,5-bisphosphate)', 'PEP (Phosphoenolpyruvate)', 'OAA (Oxaloacetic acid)', 'PGA (Phosphoglyceric acid)'],
+                correct: 1,
+                explanation: 'In C4 plants, PEP (3-carbon) accepts CO2 in mesophyll cells catalyzed by PEP carboxylase (PEPcase).'
+            },
+            {
+                id: 12,
+                chapterId: 'Ch-14',
+                chapterName: 'Respiration in Plants',
+                type: 'standard',
+                question: 'What is the Respiratory Quotient (RQ) value for pure tripalmitin (fat/lipid oxidation)?',
+                options: ['1.0', '0.7', '0.9', 'Infinite'],
+                correct: 1,
+                explanation: 'RQ for fats/tripalmitin is ~0.7, for carbohydrates it is 1.0, and for proteins it is 0.9.'
+            },
+            {
+                id: 13,
+                chapterId: 'Ch-15',
+                chapterName: 'Plant Growth and Development',
+                type: 'standard',
+                question: 'Which phytohormone is known for promoting bolting (internode elongation prior to flowering) in rosette plants like cabbage?',
+                options: ['Auxin', 'Gibberellin (GA3)', 'Cytokinin', 'Abscisic Acid'],
+                correct: 1,
+                explanation: 'Gibberellins cause internodal elongation (bolting) in beet, cabbage, and many plants with rosette habit.'
+            },
+            {
+                id: 14,
+                chapterId: 'Ch-17',
+                chapterName: 'Breathing and Exchange of Gases',
+                type: 'standard',
+                question: 'Functional Residual Capacity (FRC) in human respiratory volumes is equivalent to:',
+                options: ['ERT + RV', 'TV + ERV', 'IRV + TV + ERV', 'IC + EC'],
+                correct: 0,
+                explanation: 'FRC = Expiratory Reserve Volume (ERV) + Residual Volume (RV). It is the volume of air remaining in lungs after normal expiration.'
+            },
+            {
+                id: 15,
+                chapterId: 'Ch-18',
+                chapterName: 'Body Fluids and Circulation',
+                type: 'standard',
+                question: 'On an ECG wave, the QRS complex represents:',
+                options: ['Depolarisation of the atria', 'Depolarisation of the ventricles', 'Repolarisation of the ventricles', 'Repolarisation of the atria'],
+                correct: 1,
+                explanation: 'The QRS complex corresponds to ventricular depolarization which initiates ventricular contraction.'
+            },
+
+            // --- CLASS 12 BIOLOGY ---
+            {
+                id: 16,
+                chapterId: 'Ch-2-12',
+                chapterName: 'Sexual Reproduction in Flowering Plants',
+                type: 'standard',
+                question: 'The persistent residual nucellus found in seeds like Black Pepper and Beet is called:',
+                options: ['Perisperm', 'Pericarp', 'Endosperm', 'Scutellum'],
+                correct: 0,
+                explanation: 'Persistent nucellus in seeds is termed perisperm (e.g., beet, black pepper).'
+            },
+            {
+                id: 17,
+                chapterId: 'Ch-3-12',
+                chapterName: 'Human Reproduction',
+                type: 'standard',
+                question: 'Spermiogenesis is the process of conversion of:',
+                options: ['Spermatogonia into Primary Spermatocyte', 'Primary Spermatocyte into Spermatid', 'Spermatids into Spermatozoa (Sperms)', 'Spermatogonia directly into Sperms'],
+                correct: 2,
+                explanation: 'Spermiogenesis involves differentiation of non-motile haploid spermatids into motile spermatozoa.'
+            },
+            {
+                id: 18,
+                chapterId: 'Ch-4-12',
+                chapterName: 'Reproductive Health',
+                type: 'standard',
+                question: 'Which non-medicated Intrauterine Device (IUD) works by increasing phagocytosis of sperms within the uterus?',
+                options: ['Lippes Loop', 'CuT (Copper T)', 'LNG-20', 'Progestasert'],
+                correct: 0,
+                explanation: 'Lippes loop is a non-medicated IUD that enhances phagocytosis of sperms inside uterine cavity.'
+            },
+            {
+                id: 19,
+                chapterId: 'Ch-5-12',
+                chapterName: 'Principles of Inheritance and Variation',
+                type: 'ar',
+                question: '<strong>Assertion (A):</strong> Haemophilia is a sex-linked recessive disease.<br><strong>Reason (R):</strong> The heterozygous female (carrier) for haemophilia may transmit the disease to sons.',
+                options: [
+                    'Both (A) and (R) are true and (R) is the correct explanation of (A).',
+                    'Both (A) and (R) are true but (R) is NOT the correct explanation of (A).',
+                    '(A) is true but (R) is false.',
+                    '(A) is false but (R) is true.'
+                ],
+                correct: 1,
+                explanation: 'Both statements are factually correct. Haemophilia gene is located on X-chromosome.'
+            },
+            {
+                id: 20,
+                chapterId: 'Ch-6-12',
+                chapterName: 'Molecular Basis of Inheritance',
+                type: 'diagram',
+                svgContent: `<svg viewBox="0 0 220 80" class="w-56 h-20 mx-auto border rounded bg-slate-900 text-white p-2"><rect x="10" y="20" width="40" height="30" fill="#3b82f6"/><text x="18" y="38" fill="#fff" font-size="10">i Gene</text><rect x="60" y="20" width="30" height="30" fill="#ef4444"/><text x="70" y="38" fill="#fff" font-size="10">P</text><rect x="100" y="20" width="30" height="30" fill="#f59e0b"/><text x="110" y="38" fill="#fff" font-size="10">O</text><rect x="140" y="20" width="70" height="30" fill="#10b981"/><text x="150" y="38" fill="#fff" font-size="10">z | y | a</text></svg>`,
+                question: 'In the Lac Operon model depicted above, which gene codes for the enzyme <strong>Beta-Galactosidase</strong>?',
+                options: ['Gene z', 'Gene y', 'Gene a', 'Gene i'],
+                correct: 0,
+                explanation: 'Gene z codes for Beta-galactosidase, Gene y codes for Permease, and Gene a codes for Transacetylase.'
+            },
+            {
+                id: 21,
+                chapterId: 'Ch-7-12',
+                chapterName: 'Evolution',
+                type: 'standard',
+                question: 'Industrial melanism in moth <em>Biston betularia</em> is a classical example of:',
+                options: ['Directional Natural Selection', 'Disruptive Natural Selection', 'Stabilizing Selection', 'Artificial Selection'],
+                correct: 0,
+                explanation: 'Industrial melanism selected dark/melanic moths over white moths due to soot accumulation, shifting phenotype peak in one direction.'
+            },
+            {
+                id: 22,
+                chapterId: 'Ch-8-12',
+                chapterName: 'Human Health and Diseases',
+                type: 'standard',
+                question: 'Which antibody isotype is primarily present in Colostrum secreted by mother during initial days of lactation?',
+                options: ['IgG', 'IgA', 'IgM', 'IgE'],
+                correct: 1,
+                explanation: 'Colostrum is rich in IgA antibodies which provide passive immunity to newborn infants.'
+            },
+            {
+                id: 23,
+                chapterId: 'Ch-10-12',
+                chapterName: 'Microbes in Human Welfare',
+                type: 'standard',
+                question: 'Statins used as blood-cholesterol lowering agents are commercially produced by the yeast:',
+                options: ['Monascus purpureus', 'Trichoderma polysporum', 'Saccharomyces cerevisiae', 'Aspergillus niger'],
+                correct: 0,
+                explanation: 'Statins are produced by Monascus purpureus and act by competitively inhibiting cholesterol synthesizing enzymes.'
+            },
+            {
+                id: 24,
+                chapterId: 'Ch-11-12',
+                chapterName: 'Biotechnology: Principles & Processes',
+                type: 'standard',
+                question: 'In EcoRI restriction endonuclease enzyme, what does the Roman numeral "I" signify?',
+                options: ['Order in which enzyme was isolated from strain', 'Type of bacterial strain', 'Genus index', 'Number of cleavage sites'],
+                correct: 0,
+                explanation: 'The Roman numeral indicates the order in which the restriction enzyme was isolated from the specific strain of bacteria.'
+            },
+            {
+                id: 25,
+                chapterId: 'Ch-12-12',
+                chapterName: 'Biotechnology and its Applications',
+                type: 'standard',
+                question: 'Bt toxin protein produced by <em>Bacillus thuringiensis</em> is activated inside the insect pest gut due to:',
+                options: ['Acidic pH of gut', 'Alkaline pH of gut', 'Action of digestive amylase', 'High body temperature'],
+                correct: 1,
+                explanation: 'Inactive protoxin is solubilized and converted into active toxin in the alkaline pH of the insect midgut.'
+            }
+        ];
+
+        /* ==========================================================================
+           2. STATE MANAGEMENT & GLOBALS
+           ========================================================================== */
+        let studentData = {};
+        let filteredQuestions = [...ALL_QUESTIONS];
+        let currentQIndex = 0;
+        let userAnswers = {}; // { qId: optionIndex }
+        let questionStatuses = {}; // { qId: 'not-visited' | 'not-answered' | 'answered' | 'marked' | 'marked-answered' }
+        let timerInterval = null;
+        let totalTimeSeconds = 180 * 60; // 180 mins
+        let warningCount = 3;
+        let generatedCaptchaCode = '';
+
+        /* ==========================================================================
+           3. INITIALIZATION & REGISTRATION LOGIC
+           ========================================================================== */
+        window.onload = function() {
+            generateCaptcha();
+            initSecurityListeners();
+            // Default date field to today
+            document.getElementById('reg-date').valueAsDate = new Date();
+        };
+
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            generatedCaptchaCode = captcha;
+            document.getElementById('captcha-box').innerText = captcha;
+        }
+
+        function handleRegistrationSubmit(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('reg-name').value.trim();
+            const cls = document.getElementById('reg-class').value;
+            const sec = document.getElementById('reg-section').value.trim();
+            const board = document.getElementById('reg-board').value;
+            const date = document.getElementById('reg-date').value;
+            const captchaInput = document.getElementById('reg-captcha-input').value.trim().toUpperCase();
+
+            if (captchaInput !== generatedCaptchaCode) {
+                alert('Invalid Security Captcha Code! Please re-enter.');
+                generateCaptcha();
+                return;
+            }
+
+            studentData = { name, class: cls, section: sec, board, date };
+
+            // Transition UI
+            document.getElementById('step-registration').classList.add('hidden');
+            document.getElementById('step-cbt').classList.remove('hidden');
+            document.getElementById('header-timer-container').classList.remove('hidden');
+            document.getElementById('watermark').classList.remove('hidden');
+
+            // Render CBT Candidate Header Info
+            document.getElementById('cbt-student-name').innerText = studentData.name;
+            document.getElementById('cbt-student-subtext').innerText = `${studentData.class} | ${studentData.board} | Sec: ${studentData.section}`;
+
+            // Initialize CBT Questions & Timers
+            initQuestionsState();
+            startCbtTimer();
+
+            // Request Fullscreen for CBT feel
+            try {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                }
+            } catch(err) { console.log("Fullscreen request denied/unsupported."); }
+        }
+
+        /* ==========================================================================
+           4. CBT QUESTION CONTROLLER & PALETTE
+           ========================================================================== */
+        function initQuestionsState() {
+            questionStatuses = {};
+            userAnswers = {};
+            filteredQuestions.forEach((q, idx) => {
+                questionStatuses[q.id] = (idx === 0) ? 'not-answered' : 'not-visited';
+            });
+            currentQIndex = 0;
+            renderPalette();
+            renderQuestion(currentQIndex);
+        }
+
+        function filterChapterQuestions() {
+            const sel = document.getElementById('chapter-filter').value;
+            if (sel === 'ALL') {
+                filteredQuestions = [...ALL_QUESTIONS];
+            } else {
+                filteredQuestions = ALL_QUESTIONS.filter(q => q.chapterId === sel);
+            }
+
+            if (filteredQuestions.length === 0) {
+                alert('No practice questions currently loaded for this chapter. Reverting to All Chapters.');
+                document.getElementById('chapter-filter').value = 'ALL';
+                filteredQuestions = [...ALL_QUESTIONS];
+            }
+
+            initQuestionsState();
+        }
+
+        function renderQuestion(index) {
+            if (index < 0 || index >= filteredQuestions.length) return;
+            currentQIndex = index;
+            const q = filteredQuestions[index];
+
+            // Mark visited if previously not visited
+            if (questionStatuses[q.id] === 'not-visited') {
+                questionStatuses[q.id] = 'not-answered';
+            }
+
+            document.getElementById('q-number-badge').innerText = `Question ${index + 1} of ${filteredQuestions.length}`;
+            document.getElementById('q-chapter-badge').innerText = q.chapterName;
+
+            const container = document.getElementById('question-container');
+            let html = '';
+
+            // Render Diagram if available
+            if (q.svgContent) {
+                html += `<div class="my-2 p-2 bg-slate-50 border rounded-lg flex justify-center">${q.svgContent}</div>`;
+            }
+
+            // Render Question Text
+            html += `<div class="text-sm sm:text-base font-semibold text-slate-800 leading-relaxed mb-4">${q.question}</div>`;
+
+            // Render Columns if match question
+            if (q.type === 'match' && q.columnI && q.columnII) {
+                html += `
+                <div class="grid grid-cols-2 gap-4 my-3 text-xs sm:text-sm bg-slate-50 p-3 rounded-lg border">
+                    <div><strong class="text-slate-700 block mb-1">Column I</strong>${q.columnI.join('<br>')}</div>
+                    <div><strong class="text-slate-700 block mb-1">Column II</strong>${q.columnII.join('<br>')}</div>
+                </div>`;
+            }
+
+            // Options List
+            html += `<div class="space-y-2.5 mt-4">`;
+            q.options.forEach((opt, optIdx) => {
+                const isChecked = (userAnswers[q.id] === optIdx) ? 'checked' : '';
+                const selectedBg = (userAnswers[q.id] === optIdx) ? 'border-emerald-500 bg-emerald-50/60 ring-1 ring-emerald-500' : 'border-slate-200 hover:bg-slate-50';
+                
+                html += `
+                <label class="flex items-center gap-3 p-3 rounded-xl border ${selectedBg} cursor-pointer transition-all">
+                    <input type="radio" name="option-${q.id}" value="${optIdx}" ${isChecked} onchange="selectOption(${q.id}, ${optIdx})" class="h-4 w-4 text-emerald-600 focus:ring-emerald-500">
+                    <span class="text-xs sm:text-sm text-slate-700 font-medium">${String.fromCharCode(65 + optIdx)}. ${opt}</span>
+                </label>`;
+            });
+            html += `</div>`;
+
+            container.innerHTML = html;
+            renderPalette();
+        }
+
+        function selectOption(qId, optIdx) {
+            userAnswers[qId] = optIdx;
+            if (questionStatuses[qId] === 'marked' || questionStatuses[qId] === 'marked-answered') {
+                questionStatuses[qId] = 'marked-answered';
+            } else {
+                questionStatuses[qId] = 'answered';
+            }
+            renderPalette();
+        }
+
+        function clearResponse() {
+            const q = filteredQuestions[currentQIndex];
+            delete userAnswers[q.id];
+            questionStatuses[q.id] = 'not-answered';
+            renderQuestion(currentQIndex);
+        }
+
+        function saveAndNext() {
+            const q = filteredQuestions[currentQIndex];
+            if (userAnswers[q.id] !== undefined) {
+                questionStatuses[q.id] = 'answered';
+            } else {
+                if (questionStatuses[q.id] !== 'marked') {
+                    questionStatuses[q.id] = 'not-answered';
+                }
+            }
+            
+            if (currentQIndex < filteredQuestions.length - 1) {
+                renderQuestion(currentQIndex + 1);
+            } else {
+                renderPalette();
+                alert('You have reached the end of the test. You can review your answers or click SUBMIT EXAM.');
+            }
+        }
+
+        function markForReviewAndNext() {
+            const q = filteredQuestions[currentQIndex];
+            if (userAnswers[q.id] !== undefined) {
+                questionStatuses[q.id] = 'marked-answered';
+            } else {
+                questionStatuses[q.id] = 'marked';
+            }
+
+            if (currentQIndex < filteredQuestions.length - 1) {
+                renderQuestion(currentQIndex + 1);
+            } else {
+                renderPalette();
+            }
+        }
+
+        function renderPalette() {
+            const paletteGrid = document.getElementById('palette-grid');
+            let html = '';
+
+            filteredQuestions.forEach((q, idx) => {
+                const status = questionStatuses[q.id] || 'not-visited';
+                let statusClass = 'palette-not-visited';
+                if (status === 'not-answered') statusClass = 'palette-not-answered';
+                if (status === 'answered') statusClass = 'palette-answered';
+                if (status === 'marked') statusClass = 'palette-marked';
+                if (status === 'marked-answered') statusClass = 'palette-marked-answered';
+
+                const activeRing = (idx === currentQIndex) ? 'ring-2 ring-slate-900 ring-offset-1 font-bold scale-105' : '';
+
+                html += `
+                <button onclick="renderQuestion(${idx})" class="palette-btn ${statusClass} ${activeRing}">
+                    ${idx + 1}
+                </button>`;
+            });
+
+            paletteGrid.innerHTML = html;
+        }
+
+        /* ==========================================================================
+           5. TIMER & SECURITY SUITE
+           ========================================================================== */
+        function startCbtTimer() {
+            timerInterval = setInterval(() => {
+                totalTimeSeconds--;
+                if (totalTimeSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Time limit reached! Your examination is being auto-submitted.');
+                    calculateAndShowResult();
+                    return;
+                }
+                const mins = Math.floor(totalTimeSeconds / 60);
+                const secs = totalTimeSeconds % 60;
+                document.getElementById('timer-display').innerText = 
+                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function initSecurityListeners() {
+            // Prevent Right Click
+            document.addEventListener('contextmenu', e => {
+                e.preventDefault();
+                triggerSecurityWarning("Right-click context menu is disabled during the exam.");
+            });
+
+            // Prevent Copy/Paste, DevTools Shortcuts
+            document.addEventListener('keydown', e => {
+                if (
+                    e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                    (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'u' || e.key === 'a'))
+                ) {
+                    e.preventDefault();
+                    triggerSecurityWarning("Keyboard shortcuts & developer tools are strictly restricted.");
+                }
+            });
+
+            // Tab Switching / Visibility Loss
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && !document.getElementById('step-cbt').classList.contains('hidden')) {
+                    triggerSecurityWarning("Tab switching detected! Warning logged.");
+                }
+            });
+
+            // Window Blur
+            window.addEventListener('blur', () => {
+                if (!document.getElementById('step-cbt').classList.contains('hidden')) {
+                    triggerSecurityWarning("Window lost focus. Please remain on the exam screen.");
+                }
+            });
+        }
+
+        function triggerSecurityWarning(msg) {
+            if (document.getElementById('step-cbt').classList.contains('hidden')) return;
+
+            warningCount--;
+            document.getElementById('warning-count-display').innerText = Math.max(0, warningCount);
+
+            if (warningCount <= 0) {
+                closeModal();
+                alert('SECURITY VIOLATION LIMIT EXCEEDED! Exam is being auto-submitted immediately.');
+                calculateAndShowResult();
+            } else {
+                document.getElementById('modal-msg').innerText = `${msg} Warnings remaining: ${warningCount}/3.`;
+                document.getElementById('custom-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        /* ==========================================================================
+           6. SUBMISSION, SCORECARD & WHATSAPP EXPORT
+           ========================================================================== */
+        function confirmSubmitExam() {
+            const answeredCount = Object.keys(userAnswers).length;
+            const totalCount = filteredQuestions.length;
+            const unattempted = totalCount - answeredCount;
+
+            if (confirm(`Are you sure you want to SUBMIT your examination?\n\n- Answered: ${answeredCount}\n- Unattempted: ${unattempted}\n- Total: ${totalCount}`)) {
+                calculateAndShowResult();
+            }
+        }
+
+        function calculateAndShowResult() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unattemptedCount = 0;
+
+            filteredQuestions.forEach(q => {
+                const userAns = userAnswers[q.id];
+                if (userAns === undefined) {
+                    unattemptedCount++;
+                } else if (userAns === q.correct) {
+                    correctCount++;
+                } else {
+                    incorrectCount++;
+                }
+            });
+
+            const totalScore = (correctCount * 4) - (incorrectCount * 1);
+            const maxScore = filteredQuestions.length * 4;
+            const attempted = correctCount + incorrectCount;
+            const accuracy = attempted > 0 ? Math.round((correctCount / attempted) * 100) : 0;
+
+            // Render Scorecard UI
+            document.getElementById('res-name').innerText = studentData.name;
+            document.getElementById('res-class-board').innerText = `${studentData.class} (${studentData.board})`;
+            document.getElementById('res-section').innerText = studentData.section;
+            document.getElementById('res-date').innerText = studentData.date;
+
+            document.getElementById('res-total-score').innerText = `${totalScore} / ${maxScore}`;
+            document.getElementById('res-accuracy').innerText = `${accuracy}%`;
+            document.getElementById('res-correct').innerText = correctCount;
+            document.getElementById('res-incorrect').innerText = incorrectCount;
+
+            // Render Solutions List
+            renderSolutions();
+
+            // Transition Screen
+            document.getElementById('step-cbt').classList.add('hidden');
+            document.getElementById('header-timer-container').classList.add('hidden');
+            document.getElementById('step-result').classList.remove('hidden');
+
+            // Exit Fullscreen
+            if (document.exitFullscreen) {
+                try { document.exitFullscreen(); } catch(e){}
+            }
+        }
+
+        function renderSolutions() {
+            const list = document.getElementById('solutions-list');
+            let html = '';
+
+            filteredQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[q.id];
+                const isCorrect = (userAns === q.correct);
+                const isUnattempted = (userAns === undefined);
+
+                let statusBadge = '';
+                if (isUnattempted) {
+                    statusBadge = '<span class="bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded text-[10px]">Unattempted</span>';
+                } else if (isCorrect) {
+                    statusBadge = '<span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded text-[10px]">+4 Correct</span>';
+                } else {
+                    statusBadge = '<span class="bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded text-[10px]">-1 Incorrect</span>';
+                }
+
+                html += `
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-slate-800">Q${idx + 1}. [${q.chapterName}]</span>
+                        ${statusBadge}
+                    </div>
+                    <p class="text-slate-700 font-medium">${q.question}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs text-slate-600 mt-2">
+                        <div>Your Answer: <strong class="${isCorrect ? 'text-emerald-600' : 'text-red-600'}">${userAns !== undefined ? q.options[userAns] : 'None'}</strong></div>
+                        <div>Correct Answer: <strong class="text-emerald-700">${q.options[q.correct]}</strong></div>
+                    </div>
+                    <div class="bg-white p-2.5 rounded border text-slate-600 text-xs mt-2">
+                        <strong class="text-emerald-800 block">Explanation:</strong> ${q.explanation}
+                    </div>
+                </div>`;
+            });
+
+            list.innerHTML = html;
+        }
+
+        function toggleSolutions() {
+            const cont = document.getElementById('solutions-container');
+            cont.classList.toggle('hidden');
+        }
+
+        function sendToWhatsApp() {
+            const targetNumber = "8910587106";
+            
+            let correctCount = 0;
+            let incorrectCount = 0;
+            filteredQuestions.forEach(q => {
+                const u = userAnswers[q.id];
+                if (u === q.correct) correctCount++;
+                else if (u !== undefined) incorrectCount++;
+            });
+
+            const score = (correctCount * 4) - (incorrectCount * 1);
+            const totalMax = filteredQuestions.length * 4;
+
+            const textMsg = 
+`*NEET BIOLOGY CBT DPP SCORECARD*
+*Soumendra Sir Biology Classes*
+----------------------------------------
+👤 *Student Name:* ${studentData.name}
+📚 *Class:* ${studentData.class}
+🏫 *Board:* ${studentData.board}
+🏷️ *Section/Batch:* ${studentData.section}
+📅 *Test Date:* ${studentData.date}
+
+🎯 *EXAM PERFORMANCE SUMMARY:*
+• *Total Marks Obtained:* ${score} / ${totalMax}
+• *Correct Questions:* ${correctCount}
+• *Incorrect Questions:* ${incorrectCount}
+• *Unattempted Questions:* ${filteredQuestions.length - (correctCount + incorrectCount)}
+
+----------------------------------------
+_Automated Report Generated via Official NEET CBT DPP Portal._
+_Link Validity Notice: Valid up to January 2027._`;
+
+            const encodedMsg = encodeURIComponent(textMsg);
+            const waUrl = `https://api.whatsapp.com/send?phone=91${targetNumber}&text=${encodedMsg}`;
+            window.open(waUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
